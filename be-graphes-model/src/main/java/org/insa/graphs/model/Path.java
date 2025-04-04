@@ -187,7 +187,6 @@ public class Path {
      * </ul>
      *
      * @return true if the path is valid, false otherwise.
-     * @deprecated Need to be implemented.
      */
     public boolean isValid() {
         if (this.size() < 2) return true; //If less than two nodes always return true
@@ -229,8 +228,7 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+        return getLength()/speed;
     }
 
     /**
@@ -241,8 +239,13 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+        double sum = 0;
+
+        for (Arc arc : arcs) { // For each arc, add their respective minimum travel time
+            sum += arc.getMinimumTravelTime();
+        }
+
+        return sum;
     }
 
 }
