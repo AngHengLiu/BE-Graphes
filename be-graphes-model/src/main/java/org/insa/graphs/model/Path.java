@@ -198,9 +198,23 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public float getLength() {
-        // TODO:
-        return 0;
+        float length = 0;
+        if (!this.isValid()){
+            for (ArcForward a: this.arcs){
+                length += a.getLength();
+            }
+            return length;
+        }
     }
+
+    /*if (this.origin == 0){
+        return length;
+    } else if{
+        for (ArcForward a: this.arcs){
+            length += a.getLength();
+        }
+        return length;
+    }*/
 
     /**
      * Compute the time required to travel this path if moving at the given speed.
