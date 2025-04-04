@@ -2,7 +2,10 @@ package org.insa.graphs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Iterator;
 
 /**
  * <p>
@@ -48,7 +51,8 @@ public class Path {
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        //TODO:
+            
         return new Path(graph, arcs);
     }
 
@@ -187,8 +191,23 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public boolean isValid() {
-        // TODO:
-        return false;
+        if (this.size() < 2) return true; //If less than two nodes always return true
+
+        Node cursor = this.origin;
+
+        // Try to reconstruct path using origin Node and matching it's successors with the arcs associated with the Path
+       while(true) {
+            boolean found = false;
+            for (Arc arc : cursor.getSuccessors()) { // Check if any of cursor's successors are in the list
+                if (this.arcs.contains(arc)) {
+                    cursor = arc.getDestination(); // If found, do: cursor <- successor
+                    found = true; //Note that we have made progress
+                }
+            }
+
+            if (found == false) return false; //If no progress made, return false
+            if (this.getDestination().equals(cursor)) return true; //If path complete, return true
+        }
     }
 
     /**
