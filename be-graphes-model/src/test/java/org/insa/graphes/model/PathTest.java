@@ -110,7 +110,7 @@ public class PathTest {
         assertEquals(10, longLoopPath.size());
     }
 
-    @SuppressWarnings("deprecation")
+    //@SuppressWarnings("deprecation")
     @Test
     public void testIsValid() {
         assertTrue(emptyPath.isValid());
