@@ -2,7 +2,9 @@ package org.insa.graphs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -45,10 +47,22 @@ public class Path {
      *         consecutive nodes in the list are not connected in the graph.
      * @deprecated Need to be implemented.
      */
-    public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
+    public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes) //A FINIR
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        //list of nodes valid?
+        boolean valid;
+        Node cursor = nodes.get(0); //get origin node
+        int i;
+        for (i=1;i<nodes.size();i++){
+            if (cursor.getSuccessors().contains(nodes.get(i))){
+                cursor = nodes.get(i);
+            } else {
+
+            }
+        }
+        //run through the list   
+            
         return new Path(graph, arcs);
     }
 
@@ -184,37 +198,45 @@ public class Path {
      * </ul>
      *
      * @return true if the path is valid, false otherwise.
-     * @deprecated Need to be implemented.
      */
     public boolean isValid() {
-        // TODO:
-        return false;
+        if (this.size() < 2) return true; //If less than two nodes always return true
+
+        Node cursor = this.origin;
+
+        // Try to reconstruct path using origin Node and matching it's successors with the arcs associated with the Path
+       while(true) {
+            boolean found = false;
+            for (Arc arc : cursor.getSuccessors()) { // Check if any of cursor's successors are in the list
+                if (this.arcs.contains(arc)) {
+                    cursor = arc.getDestination(); // If found, do: cursor <- successor
+                    found = true; //Note that we have made progress
+                }
+            }
+
+            if (found == false) return false; //If no progress made, return false
+            if (this.getDestination().equals(cursor)) return true; //If path complete, return true
+        }
     }
 
     /**
      * Compute the length of this path (in meters).
      *
      * @return Total length of the path (in meters).
-     * @deprecated Need to be implemented.
      */
-    public float getLength() {
+    public float getLength(){ //peut créer une exception
         float length = 0;
-        if (!this.isValid()){
-            for (ArcForward a: this.arcs){
+        if (this.isValid()){
+            for (Arc a: this.arcs){
                 length += a.getLength();
             }
             return length;
+        } else {
+            System.out.println("Path invalid, cannot get length\n");
+            return -1;
         }
+        
     }
-
-    /*if (this.origin == 0){
-        return length;
-    } else if{
-        for (ArcForward a: this.arcs){
-            length += a.getLength();
-        }
-        return length;
-    }*/
 
     /**
      * Compute the time required to travel this path if moving at the given speed.
@@ -225,8 +247,7 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+        return getLength()/(speed/3.6);
     }
 
     /**
@@ -237,8 +258,13 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+        double sum = 0;
+
+        for (Arc arc : arcs) { // For each arc, add their respective minimum travel time
+            sum += arc.getMinimumTravelTime();
+        }
+
+        return sum;
     }
 
 }
