@@ -2,9 +2,9 @@ package org.insa.graphs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+//import java.util.HashSet;
+//import java.util.Set;
 
 /**
  * <p>
@@ -31,9 +31,33 @@ public class Path {
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
+        // Special cases for small lists:
+        if (nodes.size() == 0) return new Path(graph);
+        if (nodes.size() == 1) return new Path(graph, nodes.get(0));
+
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+
+        //For all two connecting nodes, do fastestTwoNodes() to find fastest arc and store in the ArrayList
+        for(int i = 0; i < nodes.size()-1; i++) arcs.add(fastestTwoNodes(nodes.get(i), nodes.get(i+1)));
+
+        // Return new Path with ArrayList
         return new Path(graph, arcs);
+    }
+
+    //Takes two connected nodes and finds fastest route between the two. Throws IllegalArgumentException if not connected
+    private static Arc fastestTwoNodes(Node node1, Node node2) {
+        double min_len = Double.MAX_VALUE;
+        Arc min = null;
+
+        for (Arc a : node1.getSuccessors()) { // For all node1 successors, check if = node2 and in that case compare with the fastest so far
+            if (a.getDestination().equals(node2)) {
+                if (min_len > a.getMinimumTravelTime()) {
+                    min_len = a.getMinimumTravelTime();
+                    min = a;
+                } } }
+
+        if (min_len < Double.MAX_VALUE) return min;
+        throw new IllegalArgumentException();
     }
 
     /**
@@ -49,10 +73,33 @@ public class Path {
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
-        //TODO:
-            
-        return new Path(graph, arcs);
+                // Special cases for small lists:
+                if (nodes.size() == 0) return new Path(graph);
+                if (nodes.size() == 1) return new Path(graph, nodes.get(0));
+
+                List<Arc> arcs = new ArrayList<Arc>();
+
+                //For all two connecting nodes, do shortestTwoNodes() to find shortest arc and store in the ArrayList
+                for(int i = 0; i < nodes.size()-1; i++) arcs.add(shortestTwoNodes(nodes.get(i), nodes.get(i+1)));
+        
+                // Return new Path with ArrayList
+                return new Path(graph, arcs);
+    }
+
+    //Takes two connected nodes and finds shortest route between the two. Throws IllegalArgumentException if not connected
+    private static Arc shortestTwoNodes(Node node1, Node node2) {
+        double min_dist = Double.MAX_VALUE;
+        Arc min = null;
+
+        for (Arc a : node1.getSuccessors()) { // For all node1 successors, check if = node2 and in that case compare with the shortest so far
+            if (a.getDestination().equals(node2)) {
+                if (min_dist > a.getLength()) {
+                    min_dist = a.getLength();
+                    min = a;
+                } } }
+
+        if (min_dist < Double.MAX_VALUE) return min;
+        throw new IllegalArgumentException();
     }
 
     /**
@@ -215,8 +262,11 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public float getLength() {
-        // TODO:
-        return 0;
+        float sum = 0;
+        for (Arc arc : arcs) { // For each arc, add their respective length
+            sum += arc.getLength();
+        }
+        return sum;
     }
 
     /**
