@@ -14,6 +14,7 @@ import org.insa.graphs.gui.drawing.components.BasicDrawing;
 import org.insa.graphs.model.Graph;
 import org.insa.graphs.model.Path;
 import org.insa.graphs.model.io.BinaryGraphReader;
+import org.insa.graphs.model.io.BinaryPathReader;
 import org.insa.graphs.model.io.GraphReader;
 import org.insa.graphs.model.io.PathReader;
 
@@ -58,8 +59,7 @@ public class Launch {
                 new BufferedInputStream(new FileInputStream(mapName))))) {
 
             // TODO: read the graph XXX
-            reader.read();
-            graph = null;
+            graph = reader.read();
         }
 
         // create the drawing XXX
@@ -71,11 +71,10 @@ public class Launch {
 
 
         // TODO: create a path reader XXX
-        try (final PathReader pathReader = null) {
+        try (final PathReader pathReader = new BinaryPathReader(new DataInputStream(new BufferedInputStream(new FileInputStream(pathName))))) {
 
             // TODO: read the path
-            
-            path = null;
+            path = pathReader.readPath(graph);
         }
 
         // TODO: draw the path on the drawing XXX
