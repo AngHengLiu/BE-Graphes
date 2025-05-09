@@ -135,13 +135,16 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     @Override
     public void remove(E x) throws ElementNotFoundException {
         E lastElmt;
-        int lastIndex = this.currentSize--;
+        int lastIndex = this.currentSize-1;
         int index = this.array.indexOf(x);
-        if (index != -1){
-            lastElmt = this.array.get(lastIndex); //copy value of last element
+        //if we are not out of bounds
+        if (index != -1 && index <= this.currentSize-1){
+            lastElmt = this.array.get(lastIndex);
             this.array.set(index,lastElmt); //replace element to be deleted by last element
             this.currentSize--; //"removal" of last element without using remove method from arraylist as asked
-            //heapify A FINIR
+            //heapify
+            this.percolateDown(index);
+            this.percolateUp(index);
         } else{
             throw new ElementNotFoundException(x);
         }
@@ -208,3 +211,48 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     }
 
 }
+
+/*===================Code non-utilisé=========================== */
+/*public void remove(E x) throws ElementNotFoundException {
+    E lastElmt;
+    int lastIndex = this.currentSize--;
+    //===================There exists a solution much simpler!!!============
+    //create an array that only holds the elements currently in the heap
+        ArrayList<E> arrayReduced = new ArrayList<E>();
+        for (int i=0;i<this.currentSize--;i++){
+            arrayReduced.add(this.array.get(i));
+        }
+        int index = arrayReduced.indexOf(x);
+    //======================================================================
+    int leftChild;
+    int rightChild;
+    int parent;
+    if (index != -1){
+        lastElmt = this.array.get(lastIndex); //copy value of last element
+        this.array.set(index,lastElmt); //replace element to be deleted by last element
+        this.currentSize--; //"removal" of last element without using remove method from arraylist as asked
+
+        //===========Not used because we have functions that take care of this================
+        //for checking if heap property holds true
+        leftChild = (this.array.get(indexLeft(index)).compareTo(this.array.get(index)));
+        rightChild = (this.array.get(indexLeft(index)+1).compareTo(this.array.get(index)));
+        parent = (this.array.get(indexParent(index)).compareTo(this.array.get(index)));
+
+        while (leftChild < 0 || rightChild < 0 || parent > 0 ){
+            //if one of the children smaller 
+            if (leftChild < 0 || rightChild < 0){
+                //move down
+            //if parent greater
+            } else if (parent > 0){
+                //move up
+            }
+            //update conditions
+            leftChild = (this.array.get(indexLeft(index)).compareTo(this.array.get(index)));
+            rightChild = (this.array.get(indexLeft(index)+1).compareTo(this.array.get(index)));
+            parent = (this.array.get(indexParent(index)).compareTo(this.array.get(index)));
+        //======================================================================================
+        }
+    } else{
+        throw new ElementNotFoundException(x);
+    }*/
+
