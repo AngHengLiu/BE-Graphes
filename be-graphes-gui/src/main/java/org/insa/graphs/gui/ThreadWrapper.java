@@ -37,7 +37,6 @@ public class ThreadWrapper implements RunningAction {
         return thread != null && thread.isAlive();
     }
 
-    @SuppressWarnings("removal")
     @Override
     public void interrupt() {
         thread.stop();

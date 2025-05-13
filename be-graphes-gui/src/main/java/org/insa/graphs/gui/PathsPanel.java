@@ -107,7 +107,6 @@ public class PathsPanel extends JPanel
          * @param path Path for this bundle, must not be null.
          * @throws IOException If a resource was not found.
          */
-        @SuppressWarnings("deprecation")
         public PathPanel(Path path, Color color) throws IOException {
             super();
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
