@@ -107,9 +107,12 @@ public final class Node {
     }
 
     /**
-     * @return true if this node has at least oneRoadInforma
-        return !this.successors.isEmpty();
-    }
+     * @return true if this node has at least one successor
+     */
+        public boolean hasSuccessors(){
+            return !this.successors.isEmpty();
+        }
+    
 
     /**
      * @return List of successors of this node (unmodifiable list).
