@@ -6,13 +6,13 @@ public class Label implements Comparable<Label> {
     private Node courant;
     private boolean marque;
     private float cout_realise;
-    private Node pere;
+    private Label pere;
     //private static int NodeCount = 0;
     private int NodeNumber;
 
 
 
-    public Label(Node courant, boolean marque, float cout_realise, Node pere) {
+    public Label(Node courant, boolean marque, float cout_realise, Label pere) {
         this.courant = courant;
         this.marque = marque;
         this.cout_realise = cout_realise;
@@ -24,7 +24,7 @@ public class Label implements Comparable<Label> {
     public Node getCourant() {return this.courant;}
     public boolean getMarque() {return this.marque;}
     public float getCoutRealise() {return this.cout_realise;}
-    public Node getPere() {return this.pere;}
+    public Label getPere() {return this.pere;}
     public int getNodeNumber() {return this.NodeNumber;}
  
 
@@ -32,7 +32,7 @@ public class Label implements Comparable<Label> {
     public void setCourant(Node n) {this.courant = n;}
     public void setMarque(boolean m) {this.marque = m;}
     public void setCoutRealise(float c) {this.cout_realise = c;}
-    public void setPere(Node p) {this.pere = p;}
+    public void setPere(Label p) {this.pere = p;}
 
     @Override
     public int compareTo(Label arg0) {
