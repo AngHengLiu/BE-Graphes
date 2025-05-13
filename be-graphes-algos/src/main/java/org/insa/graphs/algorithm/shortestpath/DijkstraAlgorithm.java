@@ -2,6 +2,7 @@ package org.insa.graphs.algorithm.shortestpath;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
@@ -28,55 +29,63 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         Graph graph = data.getGraph();
         BinaryHeap<Label> pq = new BinaryHeap<>();
-        ArrayList<Label> list = new ArrayList<>();
+        HashMap<Node, Label> hm = new HashMap<>();
 
         //Init de tableau
+        Label pointer = null;
         for (Node node : graph.getNodes()) {
             if (node.equals(data.getOrigin())) {
-                Label pointer = new Label(node, false, 0, null);
-                list.add(pointer);
+                pointer = new Label(node, false, 0, null);
                 pq.insert(pointer);
             } else {
-                list.add(new Label(node, false, Float.MAX_VALUE, null));
+                pointer = new Label(node, false, (float) Double.POSITIVE_INFINITY, null);
             }
-           
+            hm.put(node, pointer);
         }
 
         while(!pq.isEmpty()) {
-            Label pointer = pq.deleteMin();
-            if (pointer.getMarque()) continue;
-            pointer.setMarque(true);
+            Label current = pq.deleteMin();
 
-            for (Arc successor : pointer.getCourant().getSuccessors()) {
+            if (current.getMarque()) continue;
+            if (current.getCourant().equals(data.getDestination())) break;
+            
+
+            current.setMarque(true);
+
+            for (Arc successor : current.getCourant().getSuccessors()) {
+                if (!data.isAllowed(successor)) continue;
+
                 Node node1 = successor.getDestination();
-                for (Label l : list) {
-                    if (l.getCourant().equals(node1) && !l.getMarque()) {
-                        
-                        if (l.getCoutRealise() > successor.getLength() + pointer.getCoutRealise()) {
-                            l.setCoutRealise(successor.getLength() + pointer.getCoutRealise());
-                            l.setPere(pointer);
-                            pq.insert(l);
-                            }
+                pointer = hm.get(node1);
+                if (pointer != null && !pointer.getMarque()) {
+                    float cout = current.getCoutRealise() + (float) data.getCost(successor);
+                    if (pointer.getCoutRealise() > cout) {
+                       
+                        boolean found = true;
+                        while (found) {
+                            found = false;
+                             try {
+                             pq.remove(pointer);
+                             found = true;
+                        } catch (Exception e) {}
                         }
+                            pointer.setCoutRealise(cout);
+                            pointer.setPere(current);
+                            pq.insert(pointer);
                     }
-                }
-    }
+                } 
+            }
+        }
     
     ArrayList<Node> pathlist= new ArrayList<>();
-    Label dest = null;
-    for (Label prev : list) {
-        if (prev.getCourant().equals(data.getDestination())) {
-            dest = prev;
-        }
-    }
+    Label dest = hm.get(data.getDestination());
 
-    while (dest.getPere() != null) {
+    while (dest != null) {
         pathlist.add(dest.getCourant());
         dest = dest.getPere();
     }
-    pathlist.add(data.getOrigin());
     Collections.reverse(pathlist);
-    Path path = org.insa.graphs.model.Path.createFastestPathFromNodes(graph, pathlist);
+    Path path = org.insa.graphs.model.Path.createShortestPathFromNodes(graph, pathlist);
 
     solution = new ShortestPathSolution(data, Status.OPTIMAL, path);
 
