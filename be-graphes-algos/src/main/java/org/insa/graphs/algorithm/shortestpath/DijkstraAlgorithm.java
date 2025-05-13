@@ -28,8 +28,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         ShortestPathSolution solution = null;
 
         Graph graph = data.getGraph();
-        BinaryHeap<Label> pq = new BinaryHeap<>();
-        HashMap<Node, Label> hm = new HashMap<>();
+        BinaryHeap<Label> pq = new BinaryHeap<>(); // Pour les iterations
+        HashMap<Node, Label> hm = new HashMap<>(); // Pour lien entre Node et label
 
         //Init de tableau
         Label pointer = null;
@@ -38,16 +38,18 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 pointer = new Label(node, false, 0, null);
                 pq.insert(pointer);
             } else {
-                pointer = new Label(node, false, (float) Double.POSITIVE_INFINITY, null);
+                pointer = new Label(node, false, Float.POSITIVE_INFINITY, null);
             }
             hm.put(node, pointer);
         }
 
+        notifyOriginProcessed(data.getOrigin());
+        // Boucle principal
         while(!pq.isEmpty()) {
             Label current = pq.deleteMin();
 
-            if (current.getMarque()) continue;
-            if (current.getCourant().equals(data.getDestination())) break;
+            if (current.getMarque()) continue; // SI déjà marqué, skip
+            if (current.getCourant().equals(data.getDestination())) break; // Si dest trouvé, fin
             
 
             current.setMarque(true);
@@ -58,38 +60,42 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 Node node1 = successor.getDestination();
                 pointer = hm.get(node1);
                 if (pointer != null && !pointer.getMarque()) {
-                    float cout = current.getCoutRealise() + (float) data.getCost(successor);
-                    if (pointer.getCoutRealise() > cout) {
+                    notifyNodeReached(node1);
+                    float newCout = current.getCoutRealise() + (float) data.getCost(successor);
+                    if (pointer.getCoutRealise() > newCout) {
+                        pointer.setCoutRealise(newCout);
                        
-                        boolean found = true;
-                        while (found) {
-                            found = false;
-                             try {
-                             pq.remove(pointer);
-                             found = true;
-                        } catch (Exception e) {}
-                        }
-                            pointer.setCoutRealise(cout);
-                            pointer.setPere(current);
-                            pq.insert(pointer);
+                        // Change le père et ajoute dans le Binary Heap
+                        pointer.setPere(current);
+                        pq.insert(pointer);
                     }
                 } 
             }
         }
     
+    notifyDestinationReached(data.getDestination());
+    // Creer liste et parcourir le plus court chemin
     ArrayList<Node> pathlist= new ArrayList<>();
     Label dest = hm.get(data.getDestination());
+    Path path;
 
+    // Si pas faisable
+    if (dest == null || dest.getCoutRealise() == Float.POSITIVE_INFINITY || dest.getPere() == null) {
+        solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+        return solution;
+    }
+
+    // Parcours
     while (dest != null) {
         pathlist.add(dest.getCourant());
         dest = dest.getPere();
     }
-    Collections.reverse(pathlist);
-    Path path = org.insa.graphs.model.Path.createShortestPathFromNodes(graph, pathlist);
 
+    Collections.reverse(pathlist); // Inverser liste pour avoir: debut -> fin
+
+    path = org.insa.graphs.model.Path.createShortestPathFromNodes(graph, pathlist);
     solution = new ShortestPathSolution(data, Status.OPTIMAL, path);
 
-    // when the algorithm terminates, return the solution that has been found
     return solution;
 
 

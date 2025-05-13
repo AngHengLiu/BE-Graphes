@@ -36,9 +36,9 @@ public class Label implements Comparable<Label> {
 
     @Override
     public int compareTo(Label arg0) {
-        if (this.cout_realise < arg0.cout_realise) return 1;
+        if (this.cout_realise < arg0.cout_realise) return -1;
 
-        return 0;
+        return 1;
     }
 
 }
