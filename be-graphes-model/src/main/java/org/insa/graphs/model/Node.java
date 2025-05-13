@@ -107,9 +107,7 @@ public final class Node {
     }
 
     /**
-     * @return true if this node has at least one successor.
-     */
-    public boolean hasSuccessors() {
+     * @return true if this node has at least oneRoadInforma
         return !this.successors.isEmpty();
     }
 

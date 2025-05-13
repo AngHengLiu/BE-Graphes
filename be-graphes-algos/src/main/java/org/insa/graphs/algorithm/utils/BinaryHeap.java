@@ -216,7 +216,7 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
 /*public void remove(E x) throws ElementNotFoundException {
     E lastElmt;
     int lastIndex = this.currentSize--;
-    //===================There exists a solution much simpler!!!============
+    //===================There exists a much simpler solution!!!============
     //create an array that only holds the elements currently in the heap
         ArrayList<E> arrayReduced = new ArrayList<E>();
         for (int i=0;i<this.currentSize--;i++){
