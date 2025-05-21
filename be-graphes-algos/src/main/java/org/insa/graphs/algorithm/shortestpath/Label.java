@@ -34,9 +34,13 @@ public class Label implements Comparable<Label> {
     public void setCoutRealise(float c) {this.cout_realise = c;}
     public void setPere(Label p) {this.pere = p;}
 
+    public float getTotalCost(){
+        return this.cout_realise;
+    }
+
     @Override
     public int compareTo(Label arg0) {
-        if (this.cout_realise < arg0.cout_realise) return -1;
+        if (this.getTotalCost() < arg0.getTotalCost()) return -1;
 
         return 1;
     }
