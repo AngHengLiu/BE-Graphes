@@ -7,17 +7,12 @@ public class Label implements Comparable<Label> {
     private boolean marque;
     private float cout_realise;
     private Label pere;
-    //private static int NodeCount = 0;
-    private int NodeNumber;
-
-
 
     public Label(Node courant, boolean marque, float cout_realise, Label pere) {
         this.courant = courant;
         this.marque = marque;
         this.cout_realise = cout_realise;
         this.pere = pere;
-        NodeNumber = courant.getId();
     }
 
     // Getters
@@ -25,8 +20,6 @@ public class Label implements Comparable<Label> {
     public boolean getMarque() {return this.marque;}
     public float getCoutRealise() {return this.cout_realise;}
     public Label getPere() {return this.pere;}
-    public int getNodeNumber() {return this.NodeNumber;}
- 
 
     //Setters
     public void setCourant(Node n) {this.courant = n;}
