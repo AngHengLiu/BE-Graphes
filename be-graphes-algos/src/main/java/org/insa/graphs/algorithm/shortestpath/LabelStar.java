@@ -23,10 +23,30 @@ public class LabelStar extends Label{
         this.cout_dest = cout;
     }
 
-    //Redefinition
+    //Calcul cout_dest
+    public float calculCoutDest(){
+        return (float)this.getCourant().getPoint().distanceTo(dest.getPoint());
+    } 
+
+    //Redefinitions
     public float getTotalCost(){
-        float cout_dest = (float)this.getCourant().getPoint().distanceTo(dest.getPoint());
-        return this.getCoutRealise() + cout_dest;
+        return this.getCoutRealise() + this.calculCoutDest();
     }
+
+    public int compareTo(LabelStar otherLS) {
+        if (this.getTotalCost() < otherLS.getTotalCost()){
+            return -1;
+        } 
+        
+        if (this.getTotalCost() == otherLS.getTotalCost()){ 
+            if (this.calculCoutDest() < otherLS.calculCoutDest()){
+                return -1;
+            } else{
+                return 1; //what if cout_dest are equal?
+            }  
+        } 
+        return 1;
+    }
+
 }
 
