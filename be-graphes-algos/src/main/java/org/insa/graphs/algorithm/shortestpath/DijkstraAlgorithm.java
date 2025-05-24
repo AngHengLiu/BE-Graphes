@@ -63,9 +63,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                     notifyNodeReached(node1);
                     float newCout = current.getCoutRealise() + (float) data.getCost(successor);
                     if (pointer.getCoutRealise() > newCout) {
-                        pointer.setCoutRealise(newCout);
-                       
+                        try {
+                            pq.remove(pointer); // Enleve dupe
+                        } catch (Exception e) {
+                            // Fait rien
+                        }
+
                         // Change le père et ajoute dans le Binary Heap
+                        pointer.setCoutRealise(newCout);
                         pointer.setPere(current);
                         pq.insert(pointer);
                     }
