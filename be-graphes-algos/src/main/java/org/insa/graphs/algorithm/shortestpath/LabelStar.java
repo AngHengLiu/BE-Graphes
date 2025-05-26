@@ -7,7 +7,7 @@ public class LabelStar extends Label{
     private float cout_dest;
     private Node dest;
     
-    public LabelStar(Node courant,boolean marque,float cout_realise,Label pere, float cout_dest,Node dest){
+    public LabelStar(Node courant,boolean marque,float cout_realise,LabelStar pere, float cout_dest,Node dest){
         super(courant,marque,cout_realise,pere);
         this.cout_dest = cout_dest;
         this.dest = dest;
@@ -38,12 +38,11 @@ public class LabelStar extends Label{
             return -1;
         } 
         
+        //Ajouté : En cas d'égalite
         if (this.getTotalCost() == otherLS.getTotalCost()){ 
             if (this.calculCoutDest() < otherLS.calculCoutDest()){
                 return -1;
-            } else{
-                return 1; //what if cout_dest are equal?
-            }  
+            }     
         } 
         return 1;
     }
