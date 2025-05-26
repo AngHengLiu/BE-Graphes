@@ -27,15 +27,27 @@ public class Label implements Comparable<Label> {
     public void setCoutRealise(float c) {this.cout_realise = c;}
     public void setPere(Label p) {this.pere = p;}
 
+    //to be redefined in LabelStar
+    public float getCoutDest(){
+        return (float)0;
+    } 
+
     public float getTotalCost(){
-        return this.cout_realise;
+        return this.cout_realise + this.getCoutDest();
     }
 
-    @Override
-    public int compareTo(Label arg0) {
-        if (this.getTotalCost() < arg0.getTotalCost()) return -1;
 
-        return 1;
+    @Override
+    public int compareTo(Label other) {
+        if (this.getTotalCost() < other.getTotalCost()) return -1;
+        if (this.getTotalCost() > other.getTotalCost()) return 1;
+
+        //En cas d'égalité pour LabelStar
+        if (this.getCoutDest() < other.getCoutDest()) return -1;
+        if (this.getCoutDest() > other.getCoutDest()) return 1;
+
+        //Si égalité parfaite         
+        return 0;
     }
 
 }

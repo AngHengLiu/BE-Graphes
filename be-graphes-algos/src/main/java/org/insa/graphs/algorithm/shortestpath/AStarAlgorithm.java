@@ -27,17 +27,17 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         ShortestPathSolution solution = null;
 
         Graph graph = data.getGraph();
-        BinaryHeap<Label> pq = new BinaryHeap<>(); // Pour les iterations
-        HashMap<Node, Label> hm = new HashMap<>(); // Pour lien entre Node et label
+        BinaryHeap<Label> pq = new BinaryHeap<>(); // LabelStar implements Comparable<Label>
+        HashMap<Node, LabelStar> hm = new HashMap<>(); // Pour lien entre Node et LabelStar 
 
         //Init de tableau
-        Label pointer = null;
+        LabelStar pointer = null;
         for (Node node : graph.getNodes()) {
             if (node.equals(data.getOrigin())) {
-                pointer = new Label(node, false, 0, null);
+                pointer = new LabelStar(node, false, 0, null,data.getDestination());
                 pq.insert(pointer);
             } else {
-                pointer = new Label(node, false, Float.POSITIVE_INFINITY, null);
+                pointer = new LabelStar(node, false, Float.POSITIVE_INFINITY, null,data.getDestination());
             }
             hm.put(node, pointer);
         }
@@ -62,9 +62,14 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
                     notifyNodeReached(node1);
                     float newCout = current.getCoutRealise() + (float) data.getCost(successor);
                     if (pointer.getCoutRealise() > newCout) {
-                        pointer.setCoutRealise(newCout);
-                       
+                        try {
+                            pq.remove(pointer); // Enleve dupe
+                        } catch (Exception e) {
+                            // Fait rien
+                        }
+
                         // Change le père et ajoute dans le Binary Heap
+                        pointer.setCoutRealise(newCout);
                         pointer.setPere(current);
                         pq.insert(pointer);
                     }
@@ -75,7 +80,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
     notifyDestinationReached(data.getDestination());
     // Creer liste et parcourir le plus court chemin
     ArrayList<Node> pathlist= new ArrayList<>();
-    Label dest = hm.get(data.getDestination());
+    LabelStar dest = hm.get(data.getDestination());
     Path path;
 
     // Si pas faisable
@@ -100,3 +105,4 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
 
     }
 }
+

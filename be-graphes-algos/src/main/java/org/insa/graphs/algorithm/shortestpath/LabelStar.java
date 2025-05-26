@@ -4,48 +4,27 @@ import org.insa.graphs.model.Node;
 
 public class LabelStar extends Label{
 
-    private float cout_dest;
     private Node dest;
     
-    public LabelStar(Node courant,boolean marque,float cout_realise,LabelStar pere, float cout_dest,Node dest){
+    public LabelStar(Node courant,boolean marque,float cout_realise,LabelStar pere, Node dest){
         super(courant,marque,cout_realise,pere);
-        this.cout_dest = cout_dest;
         this.dest = dest;
     }
 
-    //Getter
+    //Getters redefined
+    @Override  
     public float getCoutDest(){
-        return this.cout_dest;
+        return this.calculCoutDest();
     }
 
-    //Setter
-    public void setCoutDest(float cout){
-        this.cout_dest = cout;
-    }
+    @Override 
+    public LabelStar getPere(){
+        return (LabelStar)super.getPere();
+    } 
 
     //Calcul cout_dest
     public float calculCoutDest(){
         return (float)this.getCourant().getPoint().distanceTo(dest.getPoint());
     } 
-
-    //Redefinitions
-    public float getTotalCost(){
-        return this.getCoutRealise() + this.calculCoutDest();
-    }
-
-    public int compareTo(LabelStar otherLS) {
-        if (this.getTotalCost() < otherLS.getTotalCost()){
-            return -1;
-        } 
-        
-        //Ajouté : En cas d'égalite
-        if (this.getTotalCost() == otherLS.getTotalCost()){ 
-            if (this.calculCoutDest() < otherLS.calculCoutDest()){
-                return -1;
-            }     
-        } 
-        return 1;
-    }
-
 }
 
