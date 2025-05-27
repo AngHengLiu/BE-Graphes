@@ -45,7 +45,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         notifyOriginProcessed(data.getOrigin());
         // Boucle principal
         while(!pq.isEmpty()) {
-            Label current = pq.deleteMin();
+            LabelStar current = (LabelStar)pq.deleteMin();
 
             if (current.getMarque()) continue; // SI déjà marqué, skip
             if (current.getCourant().equals(data.getDestination())) break; // Si dest trouvé, fin

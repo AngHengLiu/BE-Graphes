@@ -31,7 +31,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         BinaryHeap<Label> pq = new BinaryHeap<>(); // Pour les iterations
         HashMap<Node, Label> hm = new HashMap<>(); // Pour lien entre Node et label
 
-        //Init de tableau
+        //Init de HashMap
         Label pointer = null;
         for (Node node : graph.getNodes()) {
             if (node.equals(data.getOrigin())) {
@@ -48,7 +48,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         while(!pq.isEmpty()) {
             Label current = pq.deleteMin();
 
-            if (current.getMarque()) continue; // SI déjà marqué, skip
+            if (current.getMarque()) continue; // Si déjà marqué, skip
             if (current.getCourant().equals(data.getDestination())) break; // Si dest trouvé, fin
             
 
