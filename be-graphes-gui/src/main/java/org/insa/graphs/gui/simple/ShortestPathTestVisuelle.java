@@ -11,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.insa.graphs.algorithm.AbstractSolution;
 import org.insa.graphs.algorithm.ArcInspectorFactory;
+import org.insa.graphs.algorithm.shortestpath.AStarAlgorithm;
 import org.insa.graphs.algorithm.shortestpath.BellmanFordAlgorithm;
 import org.insa.graphs.algorithm.shortestpath.DijkstraAlgorithm;
 import org.insa.graphs.algorithm.shortestpath.ShortestPathData;
@@ -58,10 +59,22 @@ public class ShortestPathTestVisuelle {
                     System.err.println("Error: Not expected feasibility");
                 }
 
+                 // ASTAR
+                AStarAlgorithm astar = new AStarAlgorithm(data);
+                ShortestPathSolution astarSolution = astar.run();
+                
+                // Check if solution matches expected feasibility
+                boolean pathExists2 = astarSolution.getStatus() == AbstractSolution.Status.OPTIMAL;
+                if (pathExists2 != scenario.expectedFeasible) {
+                    System.err.println("Error: Not expected feasibility");
+                }
+
                 // Create variables for visual storage
                 Path dijkstraPath = null;
+                Path astarPath = null;
                 Path bellmanFordPath = null;
                 double dijkstraCost = 0;
+                double astarCost = 0;
                 double bellmanFordCost = 0;
 
                 // Process Dijkstra results
@@ -70,13 +83,24 @@ public class ShortestPathTestVisuelle {
                     boolean isValid = dijkstraPath.isValid();
                     dijkstraCost = scenario.arcInspectorId == 0 ? dijkstraPath.getLength() : dijkstraPath.getMinimumTravelTime();
                     
-                    System.out.println("Dijkstra result: Path valid: " + isValid + 
-                                      ", Cost: " + dijkstraCost);
+                    System.out.println("Dijkstra result: Path valid: " + isValid + ", Cost: " + dijkstraCost);
                 } else {
                     System.out.println("Dijkstra could not find a path.");
                 }
 
-                // For small graphs, also run Bellman-Ford for comparison (all maps except Brazil)
+                // Process Dijkstra results
+                if (pathExists2) {
+                    astarPath = astarSolution.getPath();
+                    boolean isValid2 = astarPath.isValid();
+                    astarCost = scenario.arcInspectorId == 0 ? astarPath.getLength() : astarPath.getMinimumTravelTime();
+                    
+                    System.out.println("A* result: Path valid: " + isValid2 + 
+                                      ", Cost: " + astarCost);
+                } else {
+                    System.out.println("A* could not find a path.");
+                }
+
+                // For small graphs, also run Bellman-Ford for comparison
                 if (graph.size() < 100000) {
 
                     //BELLMAN FORD
@@ -90,7 +114,8 @@ public class ShortestPathTestVisuelle {
                         bellmanFordCost = scenario.arcInspectorId == 0 ? bellmanFordPath.getLength() : bellmanFordPath.getMinimumTravelTime();
                         
                         System.out.println("Bellman-Ford result: Path valid: " + bellmanFordPath.isValid() + ", Cost: " + bellmanFordCost);
-                        System.out.println("Costs match: " + Math.abs(dijkstraCost - bellmanFordCost));
+                        System.out.println(" Dijkstra Bellman-Ford Costs match: " + Math.abs(dijkstraCost - bellmanFordCost));
+                        System.out.println("A* Bellman-Ford costs match: " + Math.abs(astarCost - bellmanFordCost));
                     } else {
                         System.out.println("Bellman-Ford could not find a path.");
                     }
@@ -104,6 +129,7 @@ public class ShortestPathTestVisuelle {
                     // Store the paths for drawing
                     final Path finalDijkstraPath = dijkstraPath;
                     final Path finalBellmanFordPath = bellmanFordPath;
+                    final Path finalAStarPath = bellmanFordPath;
                     
                     // Create drawing from Launch class
                     final Drawing drawing = Launch.createDrawing();
@@ -119,6 +145,7 @@ public class ShortestPathTestVisuelle {
                              // Draw paths
                             if (finalBellmanFordPath != null) drawing.drawPath(finalBellmanFordPath, java.awt.Color.GREEN, true);
                             if (finalDijkstraPath != null) drawing.drawPath(finalDijkstraPath, java.awt.Color.BLUE, true);
+                            if (finalAStarPath != null) drawing.drawPath(finalAStarPath, java.awt.Color.GREEN, true);
                             
                             // Code for the opening of the widow
                             javax.swing.JFrame frame = null;

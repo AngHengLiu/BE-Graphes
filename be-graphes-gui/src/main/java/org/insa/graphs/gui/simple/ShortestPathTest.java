@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.insa.graphs.algorithm.AbstractSolution;
 import org.insa.graphs.algorithm.ArcInspectorFactory;
+import org.insa.graphs.algorithm.shortestpath.AStarAlgorithm;
 import org.insa.graphs.algorithm.shortestpath.BellmanFordAlgorithm;
 import org.insa.graphs.algorithm.shortestpath.DijkstraAlgorithm;
 import org.insa.graphs.algorithm.shortestpath.ShortestPathData;
@@ -59,6 +60,23 @@ public class ShortestPathTest {
                     
                     System.out.println("Dijkstra result: Path valid: " + isValid + ", Cost: " + computedCost);
 
+                    // A*
+                    AStarAlgorithm astar = new AStarAlgorithm(data);
+                    ShortestPathSolution astarSolution = astar.run();
+                
+                    // Check if solution matches expected feasibility
+                    boolean pathExists2 = astarSolution.getStatus() == AbstractSolution.Status.OPTIMAL;
+                    if (pathExists2 != scenario.expectedFeasible) {
+                        System.err.println("Error: Not expected feasibility");
+                    }
+
+                    Path aStarPath = astarSolution.getPath();
+                    boolean aStarValid = aStarPath.isValid();
+                    double aStarCost = scenario.arcInspectorId == 0 ? aStarPath.getLength() : aStarPath.getMinimumTravelTime();
+                    
+                    System.out.println("A* result: Path valid: " + aStarValid + ", Cost: " + aStarCost);
+
+
                     // For small graphs, also run Bellman-Ford for comparison
                     if (graph.size() < 100000) {
 
@@ -73,7 +91,8 @@ public class ShortestPathTest {
                             
                             // Compare costs
                             System.out.println("Bellman-Ford result: Path valid: " + bellmanPath.isValid() + ", Cost: " + bellmanCost);
-                            System.out.println("Cost difference: " + Math.abs(computedCost - bellmanCost));
+                            System.out.println("Cost difference Dijkstra Bellman-Ford: " + Math.abs(computedCost - bellmanCost));
+                            System.out.println("Cost difference A* Bellman-Ford: " + Math.abs(aStarCost - bellmanCost));
                         } else {
                             System.out.println("Bellman-Ford could not find a path.");
                         }

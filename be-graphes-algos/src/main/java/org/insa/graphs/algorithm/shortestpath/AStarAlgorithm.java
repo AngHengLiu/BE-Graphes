@@ -30,6 +30,12 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         BinaryHeap<Label> pq = new BinaryHeap<>(); // LabelStar implements Comparable<Label>
         HashMap<Node, LabelStar> hm = new HashMap<>(); // Pour lien entre Node et LabelStar 
 
+        // Edge case, dest == origin
+        if (data.getOrigin().equals(data.getDestination())) {
+             Path path = new Path(graph, data.getOrigin());
+            return new ShortestPathSolution(data, Status.OPTIMAL, path);
+        }
+
         //Init de tableau
         LabelStar pointer = null;
         for (Node node : graph.getNodes()) {

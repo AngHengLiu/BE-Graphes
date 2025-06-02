@@ -31,6 +31,13 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         BinaryHeap<Label> pq = new BinaryHeap<>(); // Pour les iterations
         HashMap<Node, Label> hm = new HashMap<>(); // Pour lien entre Node et label
 
+        // Edge case, dest == origin
+        if (data.getOrigin().equals(data.getDestination())) {
+             Path path = new Path(graph, data.getOrigin());
+            return new ShortestPathSolution(data, Status.OPTIMAL, path);
+        }
+
+
         //Init de HashMap
         Label pointer = null;
         for (Node node : graph.getNodes()) {
