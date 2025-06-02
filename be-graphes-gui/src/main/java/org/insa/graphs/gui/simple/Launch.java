@@ -49,10 +49,13 @@ public class Launch {
         final String mapName =
                 "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr";
         final String pathName =
-                "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Paths/path_fr31insa_rangueil_r2.path";
+                "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Paths/";
+
+            String paths[] = {"path_fr31insa_rangueil_r2.path", "path_fr31insa_rangueil_insa.path"};
+
 
         final Graph graph;
-        final Path path;
+        Path path;
 
         // create a graph reader
         try (final GraphReader reader = new BinaryGraphReader(new DataInputStream(
@@ -65,12 +68,14 @@ public class Launch {
 
         drawing.drawGraph(graph);
 
-
-        try (final PathReader pathReader = new BinaryPathReader(new DataInputStream(new BufferedInputStream(new FileInputStream(pathName))))) {
+        for (int i = 0; i < paths.length; i++) {
+            try (PathReader pathReader = new BinaryPathReader(new DataInputStream(new BufferedInputStream(new FileInputStream(pathName.concat(paths[i])))))) {
 
             path = pathReader.readPath(graph);
         }
             drawing.drawPath(path);
+        }
+        
     }
 
 }
