@@ -58,7 +58,7 @@ public class ShortestPathTest {
                     boolean isValid = path.isValid();
                     double computedCost = scenario.arcInspectorId == 0 ? path.getLength() : path.getMinimumTravelTime();
                     
-                    System.out.println("Dijkstra result: Path valid: " + isValid + ", Cost: " + computedCost);
+                    System.out.println(" result: Path valid: " + isValid + ", Cost: " + computedCost);
 
                     // A*
                     AStarAlgorithm astar = new AStarAlgorithm(data);

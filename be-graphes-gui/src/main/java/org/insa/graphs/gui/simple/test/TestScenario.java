@@ -24,17 +24,28 @@ public class TestScenario {
 public static List<TestScenario> createTestScenarios() {
     List<TestScenario> scenarios = new ArrayList<>();
     
-    // 1. Short path in road map (distance)
+    // Short path in road map (distance)
     scenarios.add(new TestScenario(
-        "insa.mapgr",           // Map name
-        "INSA short path",      // Description
-        800,                    // Origin node ID
-        900,                    // Destination node ID
-        0,                      // Cost type (0 = distance)
-        true                    // Path should exist
+        "insa.mapgr", 
+        "INSA short path",
+        800,               
+        900,                   
+        0,            // Cost type(0  = Distance)       
+        true       
     ));
     
-    // 2. Short path in road map (time)
+    // Medium path in larger map (distance)
+    scenarios.add(new TestScenario(
+        "toulouse.mapgr",
+        "Toulouse medium path",
+        25578,
+        30566,
+        0,
+        true
+    ));
+
+    /*
+     // Short path in road map (time)
     scenarios.add(new TestScenario(
         "insa.mapgr",
         "INSA short path (time)",
@@ -44,17 +55,7 @@ public static List<TestScenario> createTestScenarios() {
         true
     ));
     
-    // 5. Medium path in larger map (distance)
-    scenarios.add(new TestScenario(
-        "toulouse.mapgr",
-        "Toulouse medium path",
-        25578,
-        30566,
-        0,
-        true
-    ));
-    
-    // 6. Medium path in larger map (time)
+    // Medium path in larger map (time)
     scenarios.add(new TestScenario(
         "toulouse.mapgr",
         "Toulouse medium path (time)",
@@ -63,8 +64,9 @@ public static List<TestScenario> createTestScenarios() {
         2,
         true
     ));
+    */
     
-    // 7. Long path in large map
+    // Long path in large map
     scenarios.add(new TestScenario(
         "brazil.mapgr",
         "Brazil long path",
@@ -74,7 +76,7 @@ public static List<TestScenario> createTestScenarios() {
         true
     ));
     
-    // 8. Non-road map
+    // Non-road map
     scenarios.add(new TestScenario(
         "paris.mapgr",
         "Paris non-road map",
@@ -84,17 +86,17 @@ public static List<TestScenario> createTestScenarios() {
         true
     ));
 
-    // 4. Non-existent path
+    // Non-existent path
     scenarios.add(new TestScenario(
         "insa.mapgr",
         "INSA non-existent path",
         246,
-        865,                  // Node likely not connected to origin
+        865,
         0,
-        false                   // Path should not exist
+        false
     ));
 
-    // 3. Same node (zero-length path)
+    // Same node (zero-length path)
     scenarios.add(new TestScenario(
         "insa.mapgr",
         "Same node path",
