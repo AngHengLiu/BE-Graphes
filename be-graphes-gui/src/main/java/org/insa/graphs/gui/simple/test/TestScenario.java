@@ -43,28 +43,6 @@ public static List<TestScenario> createTestScenarios() {
         0,
         true
     ));
-
-    /*
-     // Short path in road map (time)
-    scenarios.add(new TestScenario(
-        "insa.mapgr",
-        "INSA short path (time)",
-        800,
-        900,
-        2,                      // Cost type (2 = time)
-        true
-    ));
-    
-    // Medium path in larger map (time)
-    scenarios.add(new TestScenario(
-        "toulouse.mapgr",
-        "Toulouse medium path (time)",
-        25578,
-        30566,
-        2,
-        true
-    ));
-    */
     
     // Long path in large map
     scenarios.add(new TestScenario(
@@ -72,6 +50,16 @@ public static List<TestScenario> createTestScenarios() {
         "Brazil long path",
         5116028,
         147462,
+        0,
+        true
+    ));
+
+    // Very dense map
+    scenarios.add(new TestScenario(
+        "carre-dense.mapgr",
+        "Carre dense, very dense path",
+        340330,
+        177037,
         0,
         true
     ));

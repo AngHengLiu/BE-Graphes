@@ -39,66 +39,74 @@ public class ShortestPathTest {
                 Node destination = graph.get(scenario.destinationId);
                 
                 // Create data
-                ShortestPathData data = new ShortestPathData(graph, origin, destination, 
-                        ArcInspectorFactory.getAllFilters().get(scenario.arcInspectorId));
+                ShortestPathData data = new ShortestPathData(graph, origin, destination, ArcInspectorFactory.getAllFilters().get(scenario.arcInspectorId));
                 
                 // DIJKSTRA
+                long startTimeDijkstra = System.currentTimeMillis();
                 DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(data);
                 ShortestPathSolution dijkstraSolution = dijkstra.run();
-                
+                long dijkstraTime = (System.currentTimeMillis() - startTimeDijkstra)/1000;
+
                 // Check if solution matches expected feasibility
                 boolean pathExists = dijkstraSolution.getStatus() == AbstractSolution.Status.OPTIMAL;
-                if (pathExists != scenario.expectedFeasible) {
-                    System.err.println("Error: Not expected feasibility");
-                }
-                
-                // If path exists, validate
-                if (pathExists) {
-                    Path path = dijkstraSolution.getPath();
-                    boolean isValid = path.isValid();
-                    double computedCost = scenario.arcInspectorId == 0 ? path.getLength() : path.getMinimumTravelTime();
-                    
-                    System.out.println(" result: Path valid: " + isValid + ", Cost: " + computedCost);
+                if (pathExists != scenario.expectedFeasible) System.err.println("Error: Not expected feasibility");
 
-                    // A*
+                 // A*
+                    long startTimeAStar = System.currentTimeMillis();
                     AStarAlgorithm astar = new AStarAlgorithm(data);
                     ShortestPathSolution astarSolution = astar.run();
-                
+                    long astarTime = (System.currentTimeMillis() - startTimeAStar)/1000;
+
                     // Check if solution matches expected feasibility
                     boolean pathExists2 = astarSolution.getStatus() == AbstractSolution.Status.OPTIMAL;
                     if (pathExists2 != scenario.expectedFeasible) {
                         System.err.println("Error: Not expected feasibility");
                     }
+                
+                // If path exists, validate
+                if (pathExists && pathExists2) {
+                    Path dijkstraPath = dijkstraSolution.getPath();
+                    boolean dijkstraValid = dijkstraPath.isValid();
+                    double dijkstraCost = scenario.arcInspectorId == 0 ? dijkstraPath.getLength() : dijkstraPath.getMinimumTravelTime();
+                    
+                    System.out.println("Dijkstra result: Path valid: " + dijkstraValid + ", Cost: " + dijkstraCost + ", Time: " + dijkstraTime + "s");
 
                     Path aStarPath = astarSolution.getPath();
                     boolean aStarValid = aStarPath.isValid();
                     double aStarCost = scenario.arcInspectorId == 0 ? aStarPath.getLength() : aStarPath.getMinimumTravelTime();
                     
-                    System.out.println("A* result: Path valid: " + aStarValid + ", Cost: " + aStarCost);
+                    System.out.println("A* result: Path valid: " + aStarValid + ", Cost: " + aStarCost + ", Time: " + astarTime + "s");
 
 
                     // For small graphs, also run Bellman-Ford for comparison
                     if (graph.size() < 100000) {
 
                         //BELLMAN FORD
+                        long startTimeBell = System.currentTimeMillis();
                         BellmanFordAlgorithm bellmanFord = new BellmanFordAlgorithm(data);
                         ShortestPathSolution bellmanFordSolution = bellmanFord.run();
+                        long bellTime = (System.currentTimeMillis() - startTimeBell)/1000;
                         
+                        // Check if solution matches expected feasibility
+                        boolean pathExists3 = bellmanFordSolution.getStatus() == AbstractSolution.Status.OPTIMAL;
+                        if (pathExists3!= scenario.expectedFeasible) {
+                            System.err.println("Error: Not expected feasibility");
+                        }
+
                         if (bellmanFordSolution.getStatus() == AbstractSolution.Status.OPTIMAL) {
                             Path bellmanPath = bellmanFordSolution.getPath();
-                            double bellmanCost = scenario.arcInspectorId == 0 ? 
-                                    bellmanPath.getLength() : bellmanPath.getMinimumTravelTime();
+                            double bellmanCost = scenario.arcInspectorId == 0 ? bellmanPath.getLength() : bellmanPath.getMinimumTravelTime();
                             
                             // Compare costs
-                            System.out.println("Bellman-Ford result: Path valid: " + bellmanPath.isValid() + ", Cost: " + bellmanCost);
-                            System.out.println("Cost difference Dijkstra Bellman-Ford: " + Math.abs(computedCost - bellmanCost));
+                            System.out.println("Bellman-Ford result: Path valid: " + bellmanPath.isValid() + ", Cost: " + bellmanCost + ", Time: " + bellTime + "s");
+                            System.out.println("Cost difference Dijkstra Bellman-Ford: " + Math.abs(dijkstraCost - bellmanCost));
                             System.out.println("Cost difference A* Bellman-Ford: " + Math.abs(aStarCost - bellmanCost));
                         } else {
                             System.out.println("Bellman-Ford could not find a path.");
                         }
                     }
                 } else {
-                    System.out.println("Path does not exist.");
+                    System.out.println("Dijkstra and A* did not find a valid path.");
                 }
                 
             } catch (Exception e) {
